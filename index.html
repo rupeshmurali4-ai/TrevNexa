@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TrevNexa - Travel Planner</title>
+    <meta name="description" content="A modern, responsive travel planning web application with itinerary generator, destination explorer, budget calculator, and localStorage CRUD built for Quantum Coders." />
+    <meta property="og:title" content="TrevNexa - Travel Planner" />
+    <meta property="og:description" content="A modern, responsive travel planning web application with itinerary generator, destination explorer, budget calculator, and localStorage CRUD built for Quantum Coders." />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <!-- Top Navigation Bar -->
+    <header class="navbar" id="top-nav">
+      <div class="container nav-container">
+        <a href="#hero" class="brand-wrapper" id="brand-link">
+          <div class="brand-icon">✈️</div>
+          <div class="brand-text">
+            <h1>TrevNexa</h1>
+            <span class="team-badge">Team Quantum Coders</span>
+          </div>
+        </a>
+
+        <ul class="nav-links" id="nav-links">
+          <li><a href="#planner" class="nav-link">Trip Planner</a></li>
+          <li><a href="#itinerary" class="nav-link">Itinerary</a></li>
+          <li><a href="#explorer" class="nav-link">Destination Explorer</a></li>
+          <li><a href="#budget" class="nav-link">Budget Calculator</a></li>
+          <li>
+            <a href="#my-trips" class="nav-link">
+              My Trips <span class="trip-count-badge" id="trip-count-badge">0</span>
+            </a>
+          </li>
+        </ul>
+
+        <div class="nav-actions">
+          <a href="#planner" class="btn btn-primary btn-sm" id="btn-header-plan">
+            + Create Trip
+          </a>
+          <button class="mobile-toggle" id="mobile-toggle" aria-label="Toggle navigation menu">
+            ☰
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <!-- Hero Section -->
+      <section class="hero" id="hero">
+        <div class="container">
+          <div class="hero-content">
+            <div class="hero-pill">
+              <span>🚀 Quantum Coders Hackathon Project</span>
+              <span>•</span>
+              <span>100% Client-Side</span>
+            </div>
+            <h2 class="hero-title">
+              Smart Travel Planning, <br />
+              <span class="highlight">Tailored For Explorers</span>
+            </h2>
+            <p class="hero-description">
+              Plan custom itineraries, explore world-class destinations, balance your travel budget in real-time, and store every journey directly in your browser.
+            </p>
+            <div class="hero-cta">
+              <a href="#planner" class="btn btn-primary btn-lg" id="btn-hero-start">
+                Start Planning
+              </a>
+              <a href="#explorer" class="btn btn-outline btn-lg" id="btn-hero-explore">
+                Explore Destinations
+              </a>
+            </div>
+
+            <div class="hero-stats">
+              <div class="stat-item">
+                <div class="stat-value">9+</div>
+                <div class="stat-label">Curated Spots</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-value">Instant</div>
+                <div class="stat-label">Itinerary Gen</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-value">100%</div>
+                <div class="stat-label">Local & Private</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-value">CRUD</div>
+                <div class="stat-label">localStorage</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 1. Trip Planner Section -->
+      <section class="section" id="planner">
+        <div class="container">
+          <div class="section-header">
+            <span class="section-tag">Trip Planner</span>
+            <h2 class="section-title">Design Your Next Adventure</h2>
+            <p class="section-desc">
+              Enter your travel details, budget, and travel interests to generate an adaptive sample itinerary and financial breakdown.
+            </p>
+          </div>
+
+          <div class="planner-grid">
+            <!-- Form Card -->
+            <div class="planner-card">
+              <form id="planner-form" novalidate>
+                <!-- Destination Field -->
+                <div class="form-group">
+                  <label class="form-label" for="planner-destination">
+                    <span>Destination</span>
+                    <span class="label-hint">Where are you headed?</span>
+                  </label>
+                  <input
+                    type="text"
+                    id="planner-destination"
+                    class="form-control"
+                    placeholder="e.g. Kyoto & Tokyo, Japan or Banff National Park"
+                    value="Kyoto & Tokyo, Japan"
+                    required
+                  />
+                  <div class="quick-dest-chips">
+                    <span class="label-hint" style="margin-right: 4px; align-self: center;">Quick pick:</span>
+                    <button type="button" class="quick-chip" data-dest="Kyoto & Tokyo, Japan">Kyoto, Japan</button>
+                    <button type="button" class="quick-chip" data-dest="Santorini & Cyclades, Greece">Santorini, Greece</button>
+                    <button type="button" class="quick-chip" data-dest="Banff National Park, Canada">Banff, Canada</button>
+                    <button type="button" class="quick-chip" data-dest="Bali & Ubud, Indonesia">Bali, Indonesia</button>
+                    <button type="button" class="quick-chip" data-dest="Amalfi Coast, Italy">Amalfi, Italy</button>
+                    <button type="button" class="quick-chip" data-dest="Cape Town, South Africa">Cape Town</button>
+                  </div>
+                </div>
+
+                <!-- Dates Row -->
+                <div class="form-row form-group">
+                  <div>
+                    <label class="form-label" for="planner-start-date">
+                      <span>Start Date</span>
+                    </label>
+                    <input
+                      type="date"
+                      id="planner-start-date"
+                      class="form-control"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label class="form-label" for="planner-end-date">
+                      <span>End Date</span>
+                      <span class="label-hint" id="duration-badge">7 Days / 6 Nights</span>
+                    </label>
+                    <input
+                      type="date"
+                      id="planner-end-date"
+                      class="form-control"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <!-- Travelers & Budget Row -->
+                <div class="form-row form-group">
+                  <div>
+                    <label class="form-label" for="planner-travelers">
+                      <span>Travelers</span>
+                      <span class="label-hint">Party size</span>
+                    </label>
+                    <div class="counter-control">
+                      <button type="button" class="counter-btn" id="btn-traveler-minus" aria-label="Decrease travelers">−</button>
+                      <div class="counter-display" id="travelers-count-display">2</div>
+                      <input type="hidden" id="planner-travelers" value="2" />
+                      <button type="button" class="counter-btn" id="btn-traveler-plus" aria-label="Increase travelers">+</button>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label class="form-label" for="planner-budget">
+                      <span>Total Budget ($ USD)</span>
+                      <span class="label-hint">Approx. total limit</span>
+                    </label>
+                    <input
+                      type="number"
+                      id="planner-budget"
+                      class="form-control"
+                      min="100"
+                      step="50"
+                      value="4400"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <!-- Travel Interests -->
+                <div class="form-group">
+                  <label class="form-label">
+                    <span>Travel Interests & Vibes</span>
+                    <span class="label-hint">Select all that apply</span>
+                  </label>
+                  <div class="interests-grid">
+                    <label class="interest-checkbox selected">
+                      <input type="checkbox" value="culture" checked />
+                      <span>🏛️ History & Culture</span>
+                    </label>
+                    <label class="interest-checkbox selected">
+                      <input type="checkbox" value="food" checked />
+                      <span>🍜 Food & Culinary</span>
+                    </label>
+                    <label class="interest-checkbox selected">
+                      <input type="checkbox" value="nature" checked />
+                      <span>🌲 Nature & Scenery</span>
+                    </label>
+                    <label class="interest-checkbox">
+                      <input type="checkbox" value="adventure" />
+                      <span>🧗 Adventure & Thrills</span>
+                    </label>
+                    <label class="interest-checkbox">
+                      <input type="checkbox" value="beaches" />
+                      <span>🏖️ Beaches & Coastal</span>
+                    </label>
+                    <label class="interest-checkbox">
+                      <input type="checkbox" value="wellness" />
+                      <span>🧘 Wellness & Spa</span>
+                    </label>
+                    <label class="interest-checkbox">
+                      <input type="checkbox" value="shopping" />
+                      <span>🛍️ Shopping & Markets</span>
+                    </label>
+                    <label class="interest-checkbox">
+                      <input type="checkbox" value="photography" />
+                      <span>📸 Photography</span>
+                    </label>
+                  </div>
+                </div>
+
+                <!-- Notes / Special Requests -->
+                <div class="form-group">
+                  <label class="form-label" for="planner-notes">
+                    <span>Trip Notes & Preferences (Optional)</span>
+                    <span class="label-hint">Diet, flights, gear</span>
+                  </label>
+                  <textarea
+                    id="planner-notes"
+                    class="form-control"
+                    rows="2"
+                    placeholder="e.g. Flight booked with ANA. Interested in authentic ramen tours and bullet train day trips."
+                  ></textarea>
+                </div>
+
+                <!-- Form Action Buttons -->
+                <div style="display: flex; gap: 12px; flex-wrap: wrap; margin-top: 1rem;">
+                  <button type="submit" class="btn btn-primary" id="btn-generate-plan" style="flex: 1.4;">
+                    ⚡ Generate Itinerary
+                  </button>
+                  <button type="button" class="btn btn-outline" id="btn-save-from-planner" style="flex: 1;">
+                    💾 Save to My Trips
+                  </button>
+                </div>
+              </form>
+            </div>
+
+            <!-- Planner Live Summary Sidebar -->
+            <div class="planner-summary-sidebar">
+              <h3 class="summary-title">Plan Summary</h3>
+              
+              <ul class="summary-list">
+                <li class="summary-row">
+                  <span class="label">Destination:</span>
+                  <span class="val" id="summary-dest">Kyoto & Tokyo, Japan</span>
+                </li>
+                <li class="summary-row">
+                  <span class="label">Duration:</span>
+                  <span class="val" id="summary-dates">Loading dates...</span>
+                </li>
+                <li class="summary-row">
+                  <span class="label">Party Size:</span>
+                  <span class="val" id="summary-travelers">2 Persons</span>
+                </li>
+                <li class="summary-row">
+                  <span class="label">Total Budget:</span>
+                  <span class="val" id="summary-budget">$4,400</span>
+                </li>
+              </ul>
+
+              <div class="summary-box">
+                <div class="amt" id="summary-per-person">$2,200 total (~$275/day)</div>
+                <div class="subtext">Estimated budget per traveler</div>
+              </div>
+
+              <div style="font-size: 0.82rem; color: var(--neutral-500); line-height: 1.45;">
+                💡 <strong>Quantum Coders Tip:</strong> Once generated, you can review day-by-day activities in the Itinerary section, tweak budget percentages below, and store the full plan directly to your browser’s localStorage.
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 2. Itinerary Generator Section -->
+      <section class="section" id="itinerary" style="background: var(--neutral-100);">
+        <div class="container">
+          <div class="section-header">
+            <span class="section-tag">Itinerary Generator</span>
+            <h2 class="section-title">Day-by-Day Travel Itinerary</h2>
+            <p class="section-desc">
+              Simulated day schedule personalized with your travel interests, daily pacing, and local recommendations.
+            </p>
+          </div>
+
+          <!-- Demo Disclaimer Banner -->
+          <div class="demo-disclaimer" id="itinerary-disclaimer">
+            <span style="font-size: 1.25rem;">⚠️</span>
+            <div>
+              <strong>Demo Data Notice:</strong> All daily itinerary suggestions, estimated timings, and projected costs are simulated demo data generated client-side for hackathon demonstration and planning inspiration.
+            </div>
+          </div>
+
+          <!-- Dynamic Itinerary Container -->
+          <div class="itinerary-container" id="itinerary-content">
+            <!-- Populated via script.js -->
+            <p style="text-align: center; color: var(--neutral-500); padding: 2rem;">
+              Click "Generate Itinerary" in the Trip Planner to create your sample schedule.
+            </p>
+          </div>
+
+          <!-- Bottom Action Buttons for Itinerary -->
+          <div style="display: flex; justify-content: center; gap: 1rem; margin-top: 2rem; flex-wrap: wrap;">
+            <button class="btn btn-outline" id="btn-regenerate-itinerary">
+              🔄 Regenerate Itinerary
+            </button>
+            <button class="btn btn-outline" id="btn-export-itinerary">
+              📄 Download Itinerary (.txt)
+            </button>
+            <button class="btn btn-primary" id="btn-save-itinerary">
+              💾 Save This Itinerary
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- 3. Destination Explorer Section -->
+      <section class="section" id="explorer">
+        <div class="container">
+          <div class="section-header">
+            <span class="section-tag">Destination Explorer</span>
+            <h2 class="section-title">Explore Curated Destinations</h2>
+            <p class="section-desc">
+              Browse world-class travel hubs with realistic cost estimates, popular attractions, and quick pre-fill to jumpstart your trip planning.
+            </p>
+          </div>
+
+          <!-- Filter & Search Controls -->
+          <div class="explorer-controls">
+            <div class="search-box">
+              <span class="search-icon">🔍</span>
+              <input
+                type="text"
+                id="explorer-search"
+                class="search-input"
+                placeholder="Search destination, country, or attraction..."
+              />
+            </div>
+
+            <div class="filter-pills" id="filter-pills">
+              <button class="filter-pill active" data-category="all">All</button>
+              <button class="filter-pill" data-category="culture">Culture & Food</button>
+              <button class="filter-pill" data-category="nature">Nature</button>
+              <button class="filter-pill" data-category="beaches">Beaches</button>
+              <button class="filter-pill" data-category="adventure">Adventure</button>
+              <button class="filter-pill" data-category="wellness">Wellness</button>
+            </div>
+          </div>
+
+          <!-- Destinations Grid -->
+          <div class="destinations-grid" id="destinations-grid">
+            <!-- Injected by script.js -->
+          </div>
+        </div>
+      </section>
+
+      <!-- 4. Budget Calculator Section -->
+      <section class="section" id="budget" style="background: var(--neutral-100);">
+        <div class="container">
+          <div class="section-header">
+            <span class="section-tag">Budget Calculator</span>
+            <h2 class="section-title">Expense Breakdown & Comparison</h2>
+            <p class="section-desc">
+              Adjust category allocations to compare your total budget against estimated expenses across accommodation, dining, transit, and activities.
+            </p>
+          </div>
+
+          <div class="budget-grid">
+            <!-- Sliders Card -->
+            <div class="budget-calculator-card">
+              <h3 style="font-size: 1.25rem; font-weight: 800; margin-bottom: 1.25rem; color: var(--neutral-900);">
+                Expense Categories
+              </h3>
+
+              <div class="budget-category-row">
+                <div class="budget-category-header">
+                  <span>🏨 Accommodation (Hotels / Villas)</span>
+                  <span id="val-accom">$1,540 (35%)</span>
+                </div>
+                <input
+                  type="range"
+                  id="slider-accom"
+                  class="budget-range-input"
+                  min="10"
+                  max="60"
+                  value="35"
+                />
+              </div>
+
+              <div class="budget-category-row">
+                <div class="budget-category-header">
+                  <span>🍽️ Food & Local Dining</span>
+                  <span id="val-food">$1,100 (25%)</span>
+                </div>
+                <input
+                  type="range"
+                  id="slider-food"
+                  class="budget-range-input"
+                  min="10"
+                  max="50"
+                  value="25"
+                />
+              </div>
+
+              <div class="budget-category-row">
+                <div class="budget-category-header">
+                  <span>✈️ Transportation (Flights & Transit)</span>
+                  <span id="val-transit">$880 (20%)</span>
+                </div>
+                <input
+                  type="range"
+                  id="slider-transit"
+                  class="budget-range-input"
+                  min="5"
+                  max="50"
+                  value="20"
+                />
+              </div>
+
+              <div class="budget-category-row">
+                <div class="budget-category-header">
+                  <span>🎟️ Activities & Attractions</span>
+                  <span id="val-act">$660 (15%)</span>
+                </div>
+                <input
+                  type="range"
+                  id="slider-act"
+                  class="budget-range-input"
+                  min="5"
+                  max="40"
+                  value="15"
+                />
+              </div>
+
+              <div class="budget-category-row">
+                <div class="budget-category-header">
+                  <span>🛍️ Other & Contingency</span>
+                  <span id="val-other">$220 (5%)</span>
+                </div>
+                <input
+                  type="range"
+                  id="slider-other"
+                  class="budget-range-input"
+                  min="0"
+                  max="25"
+                  value="5"
+                />
+              </div>
+
+              <div style="margin-top: 1.5rem; text-align: right;">
+                <button type="button" class="btn btn-outline btn-sm" id="btn-sync-budget">
+                  Rebalance to 100%
+                </button>
+              </div>
+            </div>
+
+            <!-- Comparison & Visual Card -->
+            <div class="budget-comparison-card">
+              <h3 style="font-size: 1.25rem; font-weight: 800; margin-bottom: 1.25rem; color: var(--neutral-900);">
+                Budget vs. Allocation Status
+              </h3>
+
+              <!-- Status Banner -->
+              <div class="comparison-status-banner within" id="comp-status-banner">
+                <span class="status-icon">⚖️</span>
+                <div class="status-text" id="comp-status-text">
+                  <h4>Within Planned Budget</h4>
+                  <p>Your calculated expenses are aligned with your budget limit.</p>
+                </div>
+              </div>
+
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem;">
+                <div style="background: var(--neutral-50); border: 1px solid var(--neutral-200); border-radius: var(--radius-md); padding: 1rem;">
+                  <div style="font-size: 0.75rem; color: var(--neutral-500); text-transform: uppercase;">Total Budget</div>
+                  <div style="font-size: 1.4rem; font-weight: 800; color: var(--neutral-900);" id="comp-budget-entered">$4,400</div>
+                </div>
+
+                <div style="background: var(--neutral-50); border: 1px solid var(--neutral-200); border-radius: var(--radius-md); padding: 1rem;">
+                  <div style="font-size: 0.75rem; color: var(--neutral-500); text-transform: uppercase;">Estimated Allocation</div>
+                  <div style="font-size: 1.4rem; font-weight: 800; color: var(--primary-700);" id="comp-budget-estimated">$4,400</div>
+                </div>
+              </div>
+
+              <!-- Stacked Proportional Distribution Bar -->
+              <div class="stacked-bar-container">
+                <div class="stacked-bar-label">
+                  <span>Category Distribution</span>
+                  <span id="comp-difference" style="font-weight: 700; color: var(--accent-emerald);">+$0 (Balanced)</span>
+                </div>
+                <div class="stacked-bar">
+                  <div class="bar-segment segment-accom" id="bar-accom" style="width: 35%;" title="Accommodation"></div>
+                  <div class="bar-segment segment-food" id="bar-food" style="width: 25%;" title="Food"></div>
+                  <div class="bar-segment segment-transit" id="bar-transit" style="width: 20%;" title="Transit"></div>
+                  <div class="bar-segment segment-act" id="bar-act" style="width: 15%;" title="Activities"></div>
+                  <div class="bar-segment segment-other" id="bar-other" style="width: 5%;" title="Other"></div>
+                </div>
+              </div>
+
+              <!-- Legend -->
+              <div class="budget-legend">
+                <div class="legend-item">
+                  <div class="legend-color-label">
+                    <span class="legend-dot" style="background: #0284c7;"></span>
+                    <span>Accommodation</span>
+                  </div>
+                  <span class="legend-val">35%</span>
+                </div>
+                <div class="legend-item">
+                  <div class="legend-color-label">
+                    <span class="legend-dot" style="background: #10b981;"></span>
+                    <span>Food & Dining</span>
+                  </div>
+                  <span class="legend-val">25%</span>
+                </div>
+                <div class="legend-item">
+                  <div class="legend-color-label">
+                    <span class="legend-dot" style="background: #f59e0b;"></span>
+                    <span>Transit</span>
+                  </div>
+                  <span class="legend-val">20%</span>
+                </div>
+                <div class="legend-item">
+                  <div class="legend-color-label">
+                    <span class="legend-dot" style="background: #8b5cf6;"></span>
+                    <span>Activities</span>
+                  </div>
+                  <span class="legend-val">15%</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 5. My Trips (CRUD) Section -->
+      <section class="section" id="my-trips">
+        <div class="container">
+          <div class="my-trips-header">
+            <div>
+              <span class="section-tag">localStorage CRUD</span>
+              <h2 class="section-title">My Saved Trips</h2>
+              <p class="section-desc">
+                Create, inspect, update, and manage all your stored travel plans in real-time.
+              </p>
+            </div>
+
+            <!-- Status Filter Tabs -->
+            <div class="trips-filter-tabs">
+              <button class="trips-filter-btn active" data-status="all">All</button>
+              <button class="trips-filter-btn" data-status="planning">Planning</button>
+              <button class="trips-filter-btn" data-status="upcoming">Upcoming</button>
+              <button class="trips-filter-btn" data-status="completed">Completed</button>
+            </div>
+          </div>
+
+          <!-- Trips Cards Grid -->
+          <div class="trips-grid" id="trips-grid">
+            <!-- Injected via script.js -->
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Modals -->
+
+    <!-- Edit Trip Modal -->
+    <div class="modal-overlay" id="edit-trip-modal" role="dialog" aria-modal="true">
+      <div class="modal-container">
+        <div class="modal-header">
+          <h3>Edit Saved Trip</h3>
+          <button class="modal-close-btn" aria-label="Close modal">&times;</button>
+        </div>
+        <form id="edit-trip-form">
+          <div class="modal-body">
+            <input type="hidden" id="edit-trip-id" />
+
+            <div class="form-group">
+              <label class="form-label" for="edit-destination">Destination</label>
+              <input type="text" id="edit-destination" class="form-control" required />
+            </div>
+
+            <div class="form-row form-group">
+              <div>
+                <label class="form-label" for="edit-start-date">Start Date</label>
+                <input type="date" id="edit-start-date" class="form-control" required />
+              </div>
+              <div>
+                <label class="form-label" for="edit-end-date">End Date</label>
+                <input type="date" id="edit-end-date" class="form-control" required />
+              </div>
+            </div>
+
+            <div class="form-row form-group">
+              <div>
+                <label class="form-label" for="edit-travelers">Travelers</label>
+                <input type="number" id="edit-travelers" class="form-control" min="1" max="20" required />
+              </div>
+              <div>
+                <label class="form-label" for="edit-budget">Total Budget ($ USD)</label>
+                <input type="number" id="edit-budget" class="form-control" min="1" step="50" required />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="edit-status">Trip Status</label>
+              <select id="edit-status" class="form-control">
+                <option value="Planning">Planning</option>
+                <option value="Upcoming">Upcoming</option>
+                <option value="Completed">Completed</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="edit-notes">Trip Notes</label>
+              <textarea id="edit-notes" class="form-control" rows="2"></textarea>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-outline modal-cancel-btn">Cancel</button>
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- View Trip Modal -->
+    <div class="modal-overlay" id="view-trip-modal" role="dialog" aria-modal="true">
+      <div class="modal-container">
+        <div class="modal-header">
+          <h3 id="view-trip-title">Trip Details</h3>
+          <button class="modal-close-btn" aria-label="Close modal">&times;</button>
+        </div>
+        <div class="modal-body" id="view-trip-body">
+          <!-- Injected via script.js -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Confirm Delete Modal -->
+    <div class="modal-overlay" id="confirm-delete-modal" role="dialog" aria-modal="true">
+      <div class="modal-container" style="max-width: 440px;">
+        <div class="modal-header">
+          <h3>Delete Trip</h3>
+          <button class="modal-close-btn" aria-label="Close modal">&times;</button>
+        </div>
+        <div class="modal-body">
+          <p id="confirm-delete-desc" style="color: var(--neutral-600); font-size: 0.95rem;">
+            Are you sure you want to permanently delete this trip?
+          </p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline modal-cancel-btn">Cancel</button>
+          <button type="button" class="btn btn-danger" id="btn-confirm-delete">Delete Trip</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Guide Modal -->
+    <div class="modal-overlay" id="guide-modal" role="dialog" aria-modal="true">
+      <div class="modal-container">
+        <div class="modal-header">
+          <h3 id="guide-modal-title">Destination Guide</h3>
+          <button class="modal-close-btn" aria-label="Close modal">&times;</button>
+        </div>
+        <div class="modal-body" id="guide-modal-body">
+          <!-- Injected via script.js -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div class="toast-container" id="toast-container"></div>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="container">
+        <div class="footer-top">
+          <div class="footer-brand">
+            <h2>TrevNexa</h2>
+            <p class="footer-desc">
+              A modern, client-side responsive travel planning web application built for the hackathon team <strong>Quantum Coders</strong>. Powered by pure HTML, CSS, and vanilla JavaScript with browser localStorage persistence.
+            </p>
+            <div class="team-badge-footer">
+              ⚡ Developed by Team Quantum Coders
+            </div>
+          </div>
+
+          <div class="footer-col">
+            <h4>Quick Navigation</h4>
+            <ul class="footer-links">
+              <li><a href="#planner">Trip Planner</a></li>
+              <li><a href="#itinerary">Itinerary Generator</a></li>
+              <li><a href="#explorer">Destination Explorer</a></li>
+              <li><a href="#budget">Budget Calculator</a></li>
+              <li><a href="#my-trips">My Saved Trips</a></li>
+            </ul>
+          </div>
+
+          <div class="footer-col">
+            <h4>Project Specs</h4>
+            <ul class="footer-links">
+              <li><span style="color: #fff;">Architecture:</span> Frontend-Only</li>
+              <li><span style="color: #fff;">Stack:</span> HTML5 / CSS3 / Vanilla JS</li>
+              <li><span style="color: #fff;">Persistence:</span> localStorage API</li>
+              <li><span style="color: #fff;">Backend:</span> None (Client-side)</li>
+              <li><span style="color: #fff;">APIs:</span> Zero paid dependencies</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="footer-bottom">
+          <div>
+            &copy; 2026 TrevNexa. Hackathon Project for <strong>Quantum Coders</strong>.
+          </div>
+          <div>
+            * All itinerary recommendations and cost allocations are demo estimates.
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Vanilla Script -->
+    <script type="module" src="./script.js"></script>
+  </body>
+</html>
